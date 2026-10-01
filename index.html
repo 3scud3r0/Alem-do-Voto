@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080907">
+<meta name="description" content="Além do Voto — eleições, Congresso, municípios, documentos públicos e auditoria baseada em evidências.">
+<title>Além do Voto — dados públicos, eleições e evidências</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div id="app" class="shell">
+<header class="site-header">
+  <a href="#/" class="brand" aria-label="Além do Voto, início"><span>ALÉM</span><i>DO VOTO</i></a>
+  <nav class="nav" aria-label="Navegação principal">
+    <a href="#/eleicoes" data-nav="eleicoes">ELEIÇÕES</a>
+    <a href="#/congresso" data-nav="congresso">CONGRESSO</a>
+    <a href="#/municipios" data-nav="municipios">MUNICÍPIOS</a>
+    <a href="#/diarios" data-nav="diarios">DIÁRIOS</a>
+    <a href="#/raio-x" data-nav="raio-x">RAIO-X</a>
+    <a href="#/dados" data-nav="dados">DADOS</a>
+  </nav>
+  <div class="header-right">
+    <button class="top-search" id="openSearch" aria-label="Abrir busca">⌕ <span>Buscar pessoa, lei, município, empresa...</span></button>
+    <button class="menu-button" id="menuButton" aria-label="Abrir menu">☰</button>
+  </div>
+</header>
+<div class="mobile-nav" id="mobileNav" hidden>
+  <a href="#/eleicoes">Eleições</a><a href="#/congresso">Congresso</a><a href="#/municipios">Municípios</a><a href="#/diarios">Diários</a><a href="#/raio-x">Raio-X</a><a href="#/dados">Dados</a>
+</div>
+<main id="view" class="view"></main>
+<footer class="footer">
+  <div><strong>ALÉM DO VOTO</strong><p>Dados públicos, contexto, evidência e memória.</p></div>
+  <div class="footer-links"><a href="#/dados">FONTES</a><a href="#/raio-x">METODOLOGIA</a><a href="#/replay">ARQUIVO 2026</a><a href="#/auditoria">AUDITORIA</a></div>
+</footer>
+</div>
+<dialog id="searchDialog">
+  <div class="searchbox">
+    <div class="searchbox-head"><div><span class="eyebrow">BUSCA UNIVERSAL</span><h2>Procure o poder pelo nome.</h2></div><button class="close" id="closeSearch">×</button></div>
+    <div class="searchline">⌕<input id="searchInput" autocomplete="off" placeholder="Pessoa, município, partido, empresa, votação, projeto de lei..."></div>
+    <div class="results" id="results"></div>
+  </div>
+</dialog>
+<dialog id="documentDialog" class="document-dialog"><div id="documentViewer"></div></dialog>
+<div class="toast" id="toast"></div>
+<script src="assets/brazil-fallback.js"></script>
+<script src="demo/xray-dossier.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

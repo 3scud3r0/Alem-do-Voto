@@ -1,0 +1,36 @@
+{
+  "demo": true,
+  "metric": "passagens_aereas",
+  "peer_group": "mesma UF e período",
+  "period": "2026-01/2026-08",
+  "records": [
+    {
+      "peer_values": [
+        8200,
+        9100,
+        9400,
+        9800,
+        10100,
+        10400,
+        10600,
+        10900,
+        11300,
+        11700,
+        12100,
+        12400,
+        12700,
+        13100,
+        13600,
+        14200,
+        14900,
+        15800,
+        17100,
+        18900
+      ],
+      "record_id": "CAM-CEAP-DEMO-001",
+      "subject_value": 48600.0
+    }
+  ],
+  "source_system": "Câmara dos Deputados / CEAP",
+  "subject": "AVD-DEMO-001"
+}

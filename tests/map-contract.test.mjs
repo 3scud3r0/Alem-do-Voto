@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import vm from 'node:vm';
+const root=new URL('../',import.meta.url);
+const fallback=await readFile(new URL('assets/brazil-fallback.js',root),'utf8');
+const ctx={window:{}}; vm.createContext(ctx); vm.runInContext(fallback,ctx);
+const map=ctx.window.ADV_BRAZIL_PATHS;
+assert.equal(map.s.length,27,'mapa local precisa ter 27 UFs');
+for(const uf of ['SP','RJ','DF','ES']){const s=map.s.find(x=>x.u===uf);assert.ok(s,`${uf} precisa existir`);assert.ok(s.d.length>30,`${uf} precisa ter geometria`)}
+const js=(await Promise.all(['app.js','app-01.js','app-02.js','app-03.js','app-04.js','app-05.js','app-06.js','app-07.js','app-08.js'].map(x=>readFile(new URL('assets/'+x,root),'utf8')))).join('\n');
+const css=(await Promise.all(['styles.css','styles-01.css','styles-02.css','styles-03.css','styles-04.css','styles-05.css','styles-06.css'].map(x=>readFile(new URL('assets/'+x,root),'utf8')))).join('\n');
+assert.match(js,/class=\\?"uf-hit/,'cada UF precisa de path de hit independente');
+assert.match(js,/state-anchor-hit/,'UFs pequenas precisam de âncora de clique');
+assert.match(js,/\['RJ','ES','DF','SE','AL'\]/,'RJ/ES/DF/SE/AL precisam de área de clique ampliada');
+assert.match(js,/host\.addEventListener\('click'/,'clique deve usar delegação no host');
+assert.match(js,/selectState\(n\.dataset\.uf,n\.dataset\.name\)/,'clique deve selecionar a UF do alvo');
+assert.match(css,/\.state-node\.selected \.uf-visual\{fill:var\(--gold-3\)!important/,'seleção deve forçar preenchimento dourado');
+assert.match(css,/\.uf-hit\{[^}]*pointer-events:all/,'camada de hit deve receber eventos');
+assert.match(css,/\.hero-art\{[^}]*pointer-events:none/,'ornamentos do hero não podem interceptar o mapa');
+assert.match(css,/\.hero-map\{[^}]*pointer-events:auto/,'mapa do hero deve continuar clicável');
+console.log('map contract ok — SP/RJ possuem hit layer + seleção dourada');

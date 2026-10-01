@@ -1,0 +1,31 @@
+{
+  "demo": true,
+  "records": [
+    {
+      "cnpj_masked": "12.***.***/0001-**",
+      "company": "Empresa Horizonte LTDA",
+      "record_id": "RFB-QSA-DEMO-001",
+      "relation": "sócio-administrador",
+      "valid_from": "2024-01-10",
+      "valid_to": null
+    },
+    {
+      "cnpj_masked": "45.***.***/0001-**",
+      "company": "Instituto Aurora LTDA",
+      "record_id": "RFB-QSA-DEMO-002",
+      "relation": "sócio",
+      "valid_from": "2021-03-01",
+      "valid_to": "2023-12-15"
+    },
+    {
+      "cnpj_masked": "78.***.***/0001-**",
+      "company": "Participações Litoral LTDA",
+      "record_id": "RFB-QSA-DEMO-003",
+      "relation": "administrador",
+      "valid_from": "2025-02-20",
+      "valid_to": null
+    }
+  ],
+  "source_system": "Dados abertos CNPJ / Receita Federal",
+  "subject": "AVD-DEMO-001"
+}

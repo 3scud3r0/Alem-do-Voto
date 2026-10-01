@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {supplierConcentration,declaredAssetVariation,robustOutlier,temporalOverlap} from '../xray/rules.mjs';
+import {publishableSignal} from '../xray/engine.mjs';
+const c=supplierConcentration([{id:'a',amount:410},{id:'b',amount:250},{id:'c',amount:160},{id:'d',amount:85},{id:'e',amount:55},{id:'f',amount:40}],{threshold:.8});
+assert.equal(Number(c.observedValue.ratio.toFixed(2)),.82);
+const a=declaredAssetVariation(820000,1459600,{threshold:.5});assert.equal(Number(a.observedValue.ratio.toFixed(2)),.78);
+const o=robustOutlier(48600,[8200,9100,9400,9800,10100,10400,10600,10900,11300,11700,12100,12400,12700,13100,13600,14200,14900,15800,17100,18900]);assert.ok(o.observedValue.robustZ>3.5);
+assert.equal(temporalOverlap('2024-01-01',null,'2026-04-18','2026-04-18'),true);
+const docs=[{id:'d1',sourceId:'tse',sourceUrl:'https://example.test/record',capturedAt:'2026-10-01T00:00:00Z',sha256:'abc'}];
+const sig={id:'s1',ruleId:'rule',ruleVersion:'1.2.0',reproducibility:{formula:'x/y'}};
+assert.equal(publishableSignal(sig,docs,[{signalId:'s1',sourceRecordId:'r1',documentId:'d1',role:'input'}]).ok,true);
+assert.equal(publishableSignal(sig,docs,[]).ok,false);
+console.log('xray tests ok');

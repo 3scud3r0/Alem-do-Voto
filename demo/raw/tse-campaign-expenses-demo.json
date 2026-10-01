@@ -1,0 +1,38 @@
+{
+  "demo": true,
+  "period": "2026",
+  "records": [
+    {
+      "amount": 410000.0,
+      "record_id": "TSE26-DESP-0001",
+      "supplier": "Fornecedor Alfa LTDA"
+    },
+    {
+      "amount": 250000.0,
+      "record_id": "TSE26-DESP-0002",
+      "supplier": "Fornecedor Beta Serviços"
+    },
+    {
+      "amount": 160000.0,
+      "record_id": "TSE26-DESP-0003",
+      "supplier": "Fornecedor Gama Comunicação"
+    },
+    {
+      "amount": 85000.0,
+      "record_id": "TSE26-DESP-0004",
+      "supplier": "Fornecedor Delta"
+    },
+    {
+      "amount": 55000.0,
+      "record_id": "TSE26-DESP-0005",
+      "supplier": "Fornecedor Épsilon"
+    },
+    {
+      "amount": 40000.0,
+      "record_id": "TSE26-DESP-0006",
+      "supplier": "Fornecedor Zeta"
+    }
+  ],
+  "source_system": "TSE DivulgaCandContas",
+  "subject": "AVD-DEMO-001"
+}

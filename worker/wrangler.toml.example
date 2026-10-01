@@ -1,0 +1,29 @@
+name = "alem-do-voto-api"
+main = "worker.mjs"
+compatibility_date = "2026-09-30"
+
+[vars]
+TSE_MODE = "official"
+TSE_ENV = "oficial"
+TSE_CYCLE = "ele2026"
+TSE_ELECTION_CODE = "6257"
+TSE_ELECTION_DATE = "2026-10-04"
+TSE_OFFICE_CODE = "1"
+ALLOWED_ORIGINS = "https://alemdovoto.com.br,http://localhost:8787,http://127.0.0.1:8787"
+
+# Cron usa UTC. Estes dois intervalos cobrem 17:00–03:59 no horário de Brasília,
+# e o código ainda verifica a data/ano antes de coletar.
+[triggers]
+crons = ["* 20-23 4 10 *", "* 0-6 5 10 *"]
+
+[[r2_buckets]]
+binding = "RAW_ARCHIVE"
+bucket_name = "alem-do-voto-raw"
+
+[[r2_buckets]]
+binding = "VISUAL_ARCHIVE"
+bucket_name = "alem-do-voto-visuals"
+
+# Configure SUPABASE_URL como var e os segredos abaixo fora do arquivo:
+# wrangler secret put SUPABASE_SECRET_KEY
+# wrangler secret put COLLECTOR_TOKEN

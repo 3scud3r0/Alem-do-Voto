@@ -1,0 +1,23 @@
+{
+  "demo": true,
+  "records": [
+    {
+      "amount": 2384000.0,
+      "buyer": "Órgão Público Demonstrativo",
+      "company": "Empresa Horizonte LTDA",
+      "object": "Serviço demonstrativo de tecnologia",
+      "record_id": "PNCP-DEMO-CTR-001",
+      "signed_at": "2026-04-18"
+    },
+    {
+      "amount": 640000.0,
+      "buyer": "Autarquia Demonstrativa",
+      "company": "Participações Litoral LTDA",
+      "object": "Serviço demonstrativo de apoio administrativo",
+      "record_id": "PNCP-DEMO-CTR-002",
+      "signed_at": "2026-06-02"
+    }
+  ],
+  "source_system": "PNCP",
+  "subject": "AVD-DEMO-001"
+}
