@@ -1,4 +1,3 @@
-# bootstrap-run: source-complete
 name: Bootstrap validated source
 
 on:
@@ -10,7 +9,6 @@ permissions:
 
 jobs:
   unpack:
-    if: github.event.head_commit.message != 'chore: unpack Além do Voto 1.3 source'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,9 +45,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
           git commit -m "chore: unpack Além do Voto 1.3 source"
           git push
