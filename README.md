@@ -10,7 +10,7 @@ O princípio central continua sendo: **nenhum número órfão**.
 
 ## Testar a interface
 
-Abra `index.html` diretamente no navegador. A versão estática usa dados demonstrativos claramente marcados e funciona sem instalar dependências.
+Abra `index.html` diretamente no navegador para consultar a estrutura editorial. Com `node serve.mjs`, Congresso, proposições, votações, perfis, despesas, auditoria e diários consultam fontes reais pelo backend. Se uma fonte falhar, a interface exibe indisponibilidade em vez de substituir a resposta por números sintéticos.
 
 Para testar com o servidor local:
 
@@ -35,7 +35,7 @@ Ao clicar em **SP** ou **RJ**, a seleção é armazenada em `sessionStorage`, si
 
 - `#/eleicoes` — apuração e mapa oficial quando o TSE publicar snapshots;
 - `#/congresso` — visão integrada do Legislativo;
-- `#/politicos` — perfil 360 demonstrativo com níveis L1/L2/L3;
+- `#/politicos` — perfil parlamentar oficial e agregações de despesas com níveis L1/L2;
 - `#/proposicoes` — proposições e tramitação;
 - `#/votacoes` — votações nominais e votos individuais;
 - `#/comparar` — comparação factual com denominadores explícitos;
@@ -49,6 +49,18 @@ Ao clicar em **SP** ou **RJ**, a seleção é armazenada em `sessionStorage`, si
 ## Backend preparado
 
 O Worker expõe rotas para TSE, Câmara, Senado e Querido Diário, além do motor de auditoria. Conectores adicionais estão preparados para DataJud, IBGE, PNCP, Siconfi e Portal da Transparência.
+
+### Dados reais na interface
+
+- `#/congresso` consulta o panorama agregado da Câmara;
+- `#/proposicoes` consulta proposições do ano corrente;
+- `#/votacoes` consulta os registros mais recentes de votação;
+- `#/politicos` carrega identidade oficial e despesas CEAP de um parlamentar;
+- `#/auditoria` executa regras reproduzíveis sobre essas despesas;
+- `#/municipios` resolve qualquer código municipal válido pela API de Localidades do IBGE;
+- `#/diarios` pesquisa documentos no Querido Diário.
+
+Nenhum conjunto sintético é carregado pela interface pública. Os arquivos em `demo/` são fixtures exclusivas da suíte de proveniência e nunca são usados como fallback. O Raio-X público executa triagem sobre despesas oficiais, mas bloqueia o estado documental de publicação enquanto o arquivo SHA-256 de produção não estiver configurado. O replay eleitoral permanece vazio até que exista um snapshot oficial preservado no banco.
 
 ## Banco
 

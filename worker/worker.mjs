@@ -1,11 +1,12 @@
 import {Camara} from '../connectors/camara.mjs';
 import {Senado} from '../connectors/senado.mjs';
 import {QueridoDiario} from '../connectors/querido-diario.mjs';
+import {IBGE} from '../connectors/ibge.mjs';
 import {auditExpenses} from '../xray/audit-rules.mjs';
 
 const UF = ['ac','al','ap','am','ba','ce','df','es','go','ma','mt','ms','mg','pa','pb','pr','pe','pi','rj','rn','rs','ro','rr','sc','sp','se','to'];
 const PALETTE = ['#a57443','#586c74','#8c5149','#6d7655','#6b5b83','#887c69','#546a61','#9a745d'];
-const JSON_HEADERS = {'content-type':'application/json; charset=utf-8','cache-control':'no-store'};
+const JSON_HEADERS = {'content-type':'application/json; charset=utf-8','cache-control':'public, max-age=60, stale-while-revalidate=300','x-content-type-options':'nosniff'};
 
 function cfg(env) {
   const mode = (env.TSE_MODE || 'official').toLowerCase();
@@ -36,6 +37,7 @@ function ptNumber(v) {
   return Number(s.replace(/\./g,'').replace(',','.')) || 0;
 }
 function cleanText(v){ return String(v ?? '').trim(); }
+function boundedParams(searchParams,allowed,{defaultItems=20,maxItems=100}={}){const out={};for(const key of allowed){const value=searchParams.get(key);if(value!=null&&value!=='')out[key]=value}out.itens=Math.min(maxItems,Math.max(1,Number(out.itens)||defaultItems));if(out.pagina)out.pagina=Math.max(1,Number(out.pagina)||1);return out}
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 async function sha256(text){ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
 function safeTs(iso){ return iso.replace(/[:.]/g,'-'); }
@@ -219,14 +221,24 @@ async function xrayDossier(env, subjectType, subjectId) {
 }
 
 async function congressRoute(path, url) {
-  if(path==='/api/congress/deputies') return Camara.deputados(Object.fromEntries([...url.searchParams].filter(([k])=>['uf','siglaPartido','nome','idLegislatura','ordem','ordenarPor','pagina','itens'].includes(k))));
+  if(path==='/api/congress/overview') {
+    const currentYear=new Date().getFullYear();
+    const settled=await Promise.allSettled([
+      Camara.deputados({itens:8,ordem:'ASC',ordenarPor:'nome'}),
+      Camara.votacoes({itens:8,ordem:'DESC',ordenarPor:'dataHoraRegistro'}),
+      Camara.proposicoes({ano:currentYear,itens:6,ordem:'DESC',ordenarPor:'id'})
+    ]);
+    const value=i=>settled[i].status==='fulfilled'?settled[i].value:{dados:[],error:'source_unavailable'};
+    return {generatedAt:new Date().toISOString(),source:'Câmara dos Deputados · Dados Abertos',partial:settled.some(x=>x.status==='rejected'),deputies:value(0),votes:value(1),propositions:value(2)};
+  }
+  if(path==='/api/congress/deputies') return Camara.deputados(boundedParams(url.searchParams,['uf','siglaPartido','nome','idLegislatura','ordem','ordenarPor','pagina','itens']));
   const dep=path.match(/^\/api\/congress\/deputies\/(\d+)$/); if(dep) return Camara.deputado(dep[1]);
-  const exp=path.match(/^\/api\/congress\/deputies\/(\d+)\/expenses$/); if(exp) return Camara.despesas(exp[1],Object.fromEntries([...url.searchParams]));
-  if(path==='/api/congress/votes') return Camara.votacoes(Object.fromEntries([...url.searchParams]));
+  const exp=path.match(/^\/api\/congress\/deputies\/(\d+)\/expenses$/); if(exp) return Camara.despesas(exp[1],boundedParams(url.searchParams,['ano','mes','pagina','itens','ordem','ordenarPor'],{defaultItems:100,maxItems:100}));
+  if(path==='/api/congress/votes') return Camara.votacoes(boundedParams(url.searchParams,['dataInicio','dataFim','idOrgao','idProposicao','pagina','itens','ordem','ordenarPor'],{defaultItems:30,maxItems:100}));
   const vote=path.match(/^\/api\/congress\/votes\/([^/]+)$/); if(vote) return Camara.votacao(vote[1]);
   const ori=path.match(/^\/api\/congress\/votes\/([^/]+)\/orientations$/); if(ori) return Camara.orientacoes(ori[1]);
   const vv=path.match(/^\/api\/congress\/votes\/([^/]+)\/individual$/); if(vv) return Camara.votos(vv[1]);
-  if(path==='/api/congress/propositions') return Camara.proposicoes(Object.fromEntries([...url.searchParams]));
+  if(path==='/api/congress/propositions') return Camara.proposicoes(boundedParams(url.searchParams,['siglaTipo','numero','ano','keywords','idDeputadoAutor','pagina','itens','ordem','ordenarPor'],{defaultItems:30,maxItems:100}));
   const prop=path.match(/^\/api\/congress\/propositions\/(\d+)$/); if(prop) return Camara.proposicao(prop[1]);
   const tr=path.match(/^\/api\/congress\/propositions\/(\d+)\/events$/); if(tr) return Camara.tramitacoes(tr[1],Object.fromEntries([...url.searchParams]));
   const th=path.match(/^\/api\/congress\/propositions\/(\d+)\/themes$/); if(th) return Camara.temas(th[1]);
@@ -267,13 +279,14 @@ export default {
     const url=new URL(request.url), cHeaders=cors(request,env);
     if(request.method==='OPTIONS') return new Response(null,{status:204,headers:{...cHeaders,'access-control-allow-methods':'GET,POST,OPTIONS','access-control-allow-headers':'content-type,x-collector-token'}});
     try {
-      if(url.pathname==='/api/health') return json({ok:true,database:env.SUPABASE_URL&&env.SUPABASE_SECRET_KEY?'configured':'not-configured',archive:env.RAW_ARCHIVE?'configured':'not-configured',visualArchive:env.VISUAL_ARCHIVE?'configured':'not-configured',tseMode:cfg(env).mode},200,cHeaders);
+      if(url.pathname==='/api/health') return json({ok:true,database:env.SUPABASE_URL&&env.SUPABASE_SECRET_KEY?'configured':'not-configured',archive:env.RAW_ARCHIVE?'configured':'not-configured',visualArchive:env.VISUAL_ARCHIVE?'configured':'not-configured',tseMode:cfg(env).mode},200,{...cHeaders,'cache-control':'no-store'});
       if(url.pathname==='/api/elections/2026/president') return json(await publicElection(env),200,cHeaders);
       if(url.pathname==='/api/elections/2026/replay') return json({items:await replay(env,url.searchParams.get('limit'))},200,cHeaders);
       const xm=url.pathname.match(/^\/api\/xray\/(person|municipality|organization)\/([0-9a-f-]{36})$/i);
       if(xm) return json(await xrayDossier(env,xm[1].toLowerCase(),xm[2]),200,cHeaders);
       const congress=await congressRoute(url.pathname,url); if(congress) return json(congress,200,cHeaders);
       if(url.pathname==='/api/gazettes') return json(await gazetteSearch(url),200,cHeaders);
+      const municipality=url.pathname.match(/^\/api\/municipalities\/(\d{7})$/); if(municipality) return json({source:'IBGE · API de Localidades',capturedAt:new Date().toISOString(),data:await IBGE.municipio(municipality[1])},200,cHeaders);
       const auditMatch=url.pathname.match(/^\/api\/audit\/camara\/deputy\/(\d+)$/); if(auditMatch) return json(await auditDeputyExpenses(auditMatch[1],url),200,cHeaders);
       if(url.pathname==='/api/sources') return json({items:[
         {id:'tse',name:'Tribunal Superior Eleitoral',kind:'elections'}, {id:'ibge',name:'IBGE',kind:'territory'}, {id:'camara',name:'Câmara dos Deputados',kind:'legislative'},
@@ -283,7 +296,7 @@ export default {
         return json(await collect(env),200,cHeaders);
       }
       return json({error:'not_found'},404,cHeaders);
-    } catch(error) { console.error(error); return json({error:'internal_error',message:String(error?.message||error)},500,cHeaders); }
+    } catch(error) { const requestId=crypto.randomUUID();console.error(requestId,error);return json({error:'upstream_unavailable',message:'Não foi possível consultar a fonte pública neste momento.',requestId},502,{...cHeaders,'cache-control':'no-store'}); }
   },
   async scheduled(_event, env, ctx) { ctx.waitUntil(collect(env).catch(e=>console.error('scheduled collection failed',e))); }
 };
