@@ -2,7 +2,7 @@
  * Todos os registros abaixo são sintéticos e fictícios.
  */
 (()=>{
-  const enabled=location.hostname==='3scud3r0.github.io'||new URLSearchParams(location.search).has('demo');
+  const enabled=location.hostname.endsWith('.github.io')||new URLSearchParams(location.search).has('demo');
   window.ADV_PUBLIC_DEMO=enabled;
   if(!enabled)return;
 
