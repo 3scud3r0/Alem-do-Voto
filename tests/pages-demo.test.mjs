@@ -3,10 +3,11 @@ import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 
 const root=new URL('../',import.meta.url);
-const [demoScript,index,core,live,dossier]=await Promise.all([
+const [demoScript,index,core,map,live,dossier]=await Promise.all([
   readFile(new URL('demo/demo-api.js',root),'utf8'),
   readFile(new URL('index.html',root),'utf8'),
   readFile(new URL('assets/app-01.js',root),'utf8'),
+  readFile(new URL('assets/app-02.js',root),'utf8'),
   readFile(new URL('assets/app-09.js',root),'utf8'),
   readFile(new URL('demo/xray-dossier.json',root),'utf8').then(JSON.parse)
 ]);
@@ -14,6 +15,7 @@ const [demoScript,index,core,live,dossier]=await Promise.all([
 assert.ok(index.indexOf('demo/demo-api.js')<index.indexOf('assets/app.js'),'demo API deve carregar antes do frontend');
 assert.match(index,/id="demoNotice"/,'aviso global da demo precisa existir');
 assert.match(core,/ADV_DEMO_API/,'api() precisa rotear chamadas para a demo no Pages');
+assert.match(map,/if\(!DEMO_MODE&&location\.protocol!==\'file:\'\)/,'demo pública não deve consultar a malha remota do IBGE');
 assert.match(live,/DEMO SINTÉTICA/,'interface precisa identificar explicitamente dados sintéticos');
 
 const document={
