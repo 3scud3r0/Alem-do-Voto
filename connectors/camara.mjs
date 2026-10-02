@@ -1,5 +1,5 @@
 const BASE='https://dadosabertos.camara.leg.br/api/v2';
-async function get(path,params={}){const u=new URL(BASE+path);Object.entries(params).forEach(([k,v])=>v!=null&&v!==''&&u.searchParams.set(k,v));const r=await fetch(u,{headers:{accept:'application/json'}});if(!r.ok)throw new Error(`Câmara ${r.status}: ${u}`);return r.json();}
+async function get(path,params={}){const u=new URL(BASE+path);Object.entries(params).forEach(([k,v])=>v!=null&&v!==''&&u.searchParams.set(k,v));const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);try{const r=await fetch(u,{headers:{accept:'application/json','user-agent':'AlemDoVoto/1.3 (+https://alemdovoto.com.br)'},signal:controller.signal});if(!r.ok)throw new Error(`Câmara ${r.status}: ${u}`);return r.json()}finally{clearTimeout(timeout)}}
 export const Camara={
   base:BASE,
   deputados:(params={})=>get('/deputados',params),

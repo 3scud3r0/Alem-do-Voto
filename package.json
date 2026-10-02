@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node serve.mjs",
-    "test": "node tests/xray.test.mjs && node tests/provenance-demo.test.mjs && node tests/map-contract.test.mjs && node tests/audit-rules.test.mjs",
-    "check": "node --check assets/app.js && node --check assets/app-01.js && node --check assets/app-02.js && node --check assets/app-03.js && node --check assets/app-04.js && node --check assets/app-05.js && node --check assets/app-06.js && node --check assets/app-07.js && node --check assets/app-08.js && node --check worker/worker.mjs && node --check serve.mjs && node --check xray/audit-rules.mjs && node tests/xray.test.mjs && node tests/provenance-demo.test.mjs && node tests/map-contract.test.mjs && node tests/audit-rules.test.mjs"
+    "test": "node tests/xray.test.mjs && node tests/provenance-demo.test.mjs && node tests/map-contract.test.mjs && node tests/audit-rules.test.mjs && node tests/live-data-contract.test.mjs",
+    "check": "node --check assets/app.js && node --check assets/app-01.js && node --check assets/app-02.js && node --check assets/app-03.js && node --check assets/app-04.js && node --check assets/app-05.js && node --check assets/app-06.js && node --check assets/app-07.js && node --check assets/app-08.js && node --check assets/app-09.js && node --check worker/worker.mjs && node --check serve.mjs && node --check xray/audit-rules.mjs && npm test"
   }
 }

@@ -8,14 +8,14 @@ function capabilityCard(num,kicker,title,body,href,accent){return `<a class="cap
 /* ---------- PÁGINAS ---------- */
 function home(){return `<section class="home fade">
   <div class="home-hero">
-    <div class="hero-aura"></div><div class="hero-ruler"></div>
+    <div class="hero-aura"></div><div class="hero-ruler"></div><div class="hero-coordinate" aria-hidden="true">15°47′S · 47°52′W</div>
     <div class="container hero-grid">
       <div class="hero-copy">
-        <span class="eyebrow light">DADOS PÚBLICOS · EVIDÊNCIA · MEMÓRIA</span>
-        <h1 class="hero-title">O poder,<br>sem atalhos.</h1>
+        <span class="hero-edition"><i></i> INTELIGÊNCIA CÍVICA · BRASIL</span>
+        <h1 class="hero-title">O poder,<br><em>sem atalhos.</em></h1>
         <p class="hero-deck">Eleições, Congresso, municípios, gastos, contratos, empresas e documentos oficiais — conectados sem transformar dado em opinião.</p>
         <div class="hero-search"><span>⌕</span><input id="heroSearch" placeholder="Pessoa, município, empresa, lei, votação..."><button id="heroGo" aria-label="Buscar">→</button></div>
-        <div class="hero-proof"><i></i><span>Qualquer número pode ser aberto até o registro que o originou.</span></div>
+        <div class="hero-proof"><i></i><span>Todo número abre até o registro que o originou.</span><a href="#/raio-x">CONHEÇA O MÉTODO →</a></div>
       </div>
       <div class="hero-art">
         <div class="hero-map">${mapDark}</div>
@@ -24,6 +24,7 @@ function home(){return `<section class="home fade">
         <div class="hero-seal"><span>ALÉM</span><b>DO</b><span>ESTADO</span></div>
       </div>
     </div>
+    <div class="hero-scroll" aria-hidden="true"><span>EXPLORAR</span><i></i></div>
   </div>
   <div class="home-index"><div class="container index-grid">
     ${capabilityCard('01','ELEIÇÕES','Acompanhe e volte no tempo','Apuração oficial, mapa por UF, histórico e replay documental de cada snapshot.','#/eleicoes','#c6a45f')}
@@ -36,4 +37,3 @@ function home(){return `<section class="home fade">
     <div class="editorial-copy"><p>O Além do Voto combina transparência legislativa, auditoria de gastos e documentos municipais em uma única arquitetura temporal. O produto não dá nota moral a políticos nem converte correlação em acusação.</p><div class="editorial-rules"><span><b>01</b>Fonte antes de interpretação</span><span><b>02</b>Tempo antes de correlação</span><span><b>03</b>Documento antes de número</span><span><b>04</b>Limitação junto do achado</span></div></div>
   </div></div>
 </section>`}
-
