@@ -9,11 +9,11 @@ function geomPath(g,p){const rings=g.type==='Polygon'?g.coordinates:g.type==='Mu
 async function getBrazilGeo(){
   if(brazilGeoPromise)return brazilGeoPromise;
   brazilGeoPromise=(async()=>{
-    if(location.protocol!=='file:'){
+    if(!DEMO_MODE&&location.protocol!=='file:'){
       const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),4200);
       try{const r=await fetch(IBGE_MAP_URL,{headers:{accept:'application/vnd.geo+json, application/json'},signal:ctl.signal});if(r.ok){const j=await r.json();if(j?.type==='FeatureCollection'&&j.features?.length>=27)return {geo:j,source:'IBGE · API v4 · qualidade máxima',official:true}}}catch(e){console.warn('IBGE map',e)}finally{clearTimeout(timer)}
     }
-    if(FALLBACK?.s?.length===27)return {paths:FALLBACK,source:'IBGE · vetor local de contingência',official:false};
+    if(FALLBACK?.s?.length===27)return {paths:FALLBACK,source:DEMO_MODE?'Vetor local da demo · sem consulta externa':'IBGE · vetor local de contingência',official:false};
     throw new Error('map_unavailable');
   })();
   return brazilGeoPromise;
