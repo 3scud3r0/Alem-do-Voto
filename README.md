@@ -56,7 +56,7 @@ Se você quiser rodar a interface com o servidor local simulado (que contém os 
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/seu-usuario/alem-do-voto.git
+   git clone https://github.com/3scud3r0/Alem-do-Voto.git
    cd alem-do-voto
    ```
 
